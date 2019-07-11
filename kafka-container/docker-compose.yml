@@ -1,0 +1,22 @@
+version: "2"
+services:
+  zookeeper:
+    image: wurstmeister/zookeeper
+    ports:
+      - "2181:2181"
+    
+  kafka:
+    image: wurstmeister/kafka
+    ports:
+      - "9092:9092"
+    environment:
+#      HOSTNAME_COMMAND: "echo $$(hostname)"
+      KAFKA_ADVERTISED_HOST_NAME: 127.0.0.1
+      KAFKA_ADVERTISED_PORT: 9092
+      KAFKA_PORT: 9092
+      BROKER_ID_COMMAND: "docker inspect --format '{{ .Name }}' $$(hostname) | awk -F_ '{ printf $$NF }'"
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_CREATE_TOPICS: "cortomaltes:1:1"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    
